@@ -1947,3 +1947,104 @@
             </div>
           </div>
         </div>
+      `;
+
+      showSection("recipe-view");
+    }
+
+    function printRecipe(id){
+      const recipe = getRecipe(id);
+      if(!recipe) return;
+
+      const area = document.getElementById("printArea");
+      area.classList.remove("hidden");
+      area.innerHTML = `
+        <div class="printSheet">
+          <h3>${escapeHtml(recipe.name)}</h3>
+          <div class="line"><strong>Tipo:</strong> ${escapeHtml(recipeTypeLabel(recipe.type))}</div>
+          <div class="line"><strong>Base:</strong> ${escapeHtml(recipe.base || "-")}</div>
+          <div class="line"><strong>Stile:</strong> ${escapeHtml(recipe.style || "-")}</div>
+          <div class="line"><strong>Cultura:</strong> ${escapeHtml(recipe.culture || "-")}</div>
+          <div class="line"><strong>Voto:</strong> ${recipe.rating || 0}/5</div>
+          <div class="line"><strong>Note:</strong> ${escapeHtml(recipe.notes || "-")}</div>
+          <hr>
+          <div class="line"><strong>Ingredienti:</strong></div>
+          ${(recipe.ingredients || []).map(i => `<div class="line">- ${escapeHtml(i.name)} — ${num(i.qty,2)} ${escapeHtml(i.unit)} — ${escapeHtml(i.note || "-")}</div>`).join("")}
+          <hr>
+          <div class="line"><strong>Scheda sensoriale tecnica:</strong></div>
+          <div class="line"><strong>Aspetto visivo:</strong> ${escapeHtml(recipe.sensory?.visual || "-")}</div>
+          <div class="line"><strong>Aroma / naso:</strong> ${escapeHtml(recipe.sensory?.aroma || "-")}</div>
+          <div class="line"><strong>Gusto / palate:</strong> ${escapeHtml(recipe.sensory?.taste || "-")}</div>
+          <div class="line"><strong>Corpo / struttura:</strong> ${escapeHtml(recipe.sensory?.body || "-")}</div>
+          <div class="line"><strong>Finale / persistenza:</strong> ${escapeHtml(recipe.sensory?.finish || "-")}</div>
+          <div class="line"><strong>Difetti / note tecniche:</strong> ${escapeHtml(recipe.sensory?.faults || "-")}</div>
+        </div>
+      `;
+      window.print();
+    }
+
+    function deleteRecipe(id){
+      if(!confirm("Eliminare questa ricetta?")) return;
+      state.recipes = state.recipes.filter(r => r.id !== id);
+      if(state.selectedRecipeId === id) state.selectedRecipeId = state.recipes[0]?.id || null;
+      saveState();
+      renderAll();
+      showSection("recipes");
+    }
+
+    function buildBaseChannel(recipe){
+      return {
+        id: uid("ch"),
+        key:"base",
+        name: recipe.base || "Base",
+        type:"base",
+        min:0,max:100,step:1,value:100,unit:"%",
+        visualClass:"base-1",group:"01_base",sortName:"00_base"
+      };
+    }
+
+    function ingredientGroupInfo(category){
+      const map = {
+        frutta:{group:"02_frutta", prefix:"fruit"},
+        te:{group:"03_te", prefix:"tea"},
+        botaniche:{group:"04_botaniche", prefix:"botanical"},
+        spezie:{group:"05_spezie", prefix:"spice"},
+        pepe:{group:"06_pepi", prefix:"pepper"},
+        luppoli:{group:"07_luppoli", prefix:"hop"},
+        lieviti:{group:"08_lieviti", prefix:"yeast"},
+        fermenti_lattici:{group:"09_lattici", prefix:"lactic"},
+        aggiunte:{group:"10_aggiunte", prefix:"add"},
+        base:{group:"01_base", prefix:"base"}
+      };
+      return map[category] || {group:"10_aggiunte", prefix:"add"};
+    }
+
+    function visualForIngredient(category, indexInGroup){
+      const info = ingredientGroupInfo(category);
+      const n = (indexInGroup % 4) + 1;
+      return `${info.prefix}-${n}`;
+    }
+
+    function paramVisual(index){
+      return `param-${(index % 4) + 1}`;
+    }
+
+    function recipeToChannels(recipe){
+      const channels = [buildBaseChannel(recipe)];
+      const groupCounts = {frutta:0, te:0, botaniche:0, spezie:0, pepe:0, luppoli:0, lieviti:0, fermenti_lattici:0, aggiunte:0};
+
+      (recipe.ingredients || []).forEach(i => {
+        const cat = i.category || "aggiunte";
+        if(groupCounts[cat] === undefined) groupCounts[cat] = 0;
+        const info = ingredientGroupInfo(cat);
+        channels.push({
+          id: uid("ch"),
+          key:"ing_"+i.name.toLowerCase().replace(/\s+/g,"_"),
+          name:i.name,
+          type:i.name,
+          min:0,
+          max:Math.max(10, Number(i.qty) * 3 || 10),
+          step:0.1,
+          value:Number(i.qty) || 0,
+          unit:" " + (i.unit || "g/L"),
+          visualClass:
