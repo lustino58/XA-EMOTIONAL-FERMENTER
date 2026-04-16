@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>XA Vintage Fermentation</title>
+  <title>XA Vintage Fermentation - Passo 2</title>
   <style>
     :root{
       --wood:#3c2f1e;
       --leather:#2a1f14;
       --brass:#d4af77;
       --text:#f0e8d0;
+      --needle:#ff3d3d;
     }
     *{margin:0;padding:0;box-sizing:border-box}
     body{
@@ -29,6 +30,45 @@
     }
     .logo{font-size:34px;font-weight:900;letter-spacing:4px;color:#d4af77;text-shadow:0 0 12px #ffeb99;}
     .title{font-size:22px;font-weight:700;color:#f0e8d0;text-align:center;flex:1;}
+    .content{
+      margin-top:20px;padding:20px;
+      background:rgba(42,31,20,.6);
+      border:6px solid #d4af77;border-radius:18px;
+      min-height:60vh;
+      text-align:center;
+    }
+    .gauge-cluster{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;
+    }
+    .gauge{
+      background:radial-gradient(circle,#3c2f1e,#2a1f14);
+      border:12px solid #d4af77;
+      border-radius:50%;
+      width:180px;height:180px;margin:0 auto;
+      position:relative;
+      box-shadow:0 0 30px rgba(212,175,119,.5),inset 0 0 40px #111;
+    }
+    .gauge-label{
+      position:absolute;top:18px;left:50%;transform:translateX(-50%);
+      font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#d4af77;font-weight:900;
+    }
+    .needle{
+      position:absolute;top:50%;left:50%;width:5px;height:78px;
+      background:linear-gradient(transparent 50%,var(--needle) 50%);
+      transform-origin:50% 100%;
+      border-radius:4px 4px 0 0;
+      box-shadow:0 0 12px #ff3d3d;
+      transition:transform 1.2s cubic-bezier(0.68,-0.55,0.27,1.55);
+    }
+    .needle::after{
+      content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+      width:16px;height:16px;background:#d4af77;border-radius:50%;box-shadow:0 0 10px #fff;
+    }
+    .gauge-value{
+      position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+      font-size:24px;font-weight:900;color:#f0e8d0;
+      text-shadow:0 0 12px #ffeb99;
+    }
     .tab-bar{
       position:fixed;bottom:0;left:0;right:0;
       background:#2a1f14;border-top:6px solid #d4af77;
@@ -40,13 +80,6 @@
       border:3px solid transparent;
     }
     .tab.active{background:#d4af77;color:#2a1f14;}
-    .content{
-      margin-top:20px;padding:20px;
-      background:rgba(42,31,20,.6);
-      border:6px solid #d4af77;border-radius:18px;
-      min-height:60vh;
-      text-align:center;font-size:18px;
-    }
   </style>
 </head>
 <body>
@@ -55,20 +88,42 @@
     <div class="title">VINTAGE FERMENTATION<br><small style="font-size:13px">Sidro • Tè • Birra • Fermentati Rari</small></div>
   </div>
 
-  <div class="content" id="content">
-    <h2 style="color:#d4af77">Passo 1 completato ✅</h2>
-    <p>Header vintage pronto.<br>Ora dimmi: vuoi passare al Passo 2 (cruscotto con gli indicatori analogici come nella tua foto)?</p>
+  <div class="content">
+    <h2 style="color:#d4af77;margin-bottom:20px">Passo 2 – Cruscotto Analogico</h2>
+    <div class="gauge-cluster" id="gauges"></div>
+    <p style="margin-top:24px;color:#d4af77;font-size:15px">Aghi che si muovono in tempo reale.<br>Dimmi “Passo 3” quando vuoi il mixer compatto.</p>
   </div>
 
   <div class="tab-bar">
-    <div class="tab active" onclick="alert('Cruscotto')">CRUSCOTTO</div>
-    <div class="tab" onclick="alert('Mixer')">MIXER</div>
-    <div class="tab" onclick="alert('Ricette')">RICETTE</div>
+    <div class="tab active">CRUSCOTTO</div>
+    <div class="tab" onclick="alert('Prossimo passo: Mixer')">MIXER</div>
+    <div class="tab" onclick="alert('Prossimo passo: Ricette')">RICETTE</div>
   </div>
 
   <script>
-    // Tutto funziona già
-    console.log("✅ App base vintage caricata");
+    function createGauge(label, value, max, unit) {
+      const perc = Math.min(100, (value / max) * 100);
+      const angle = -135 + (perc * 2.7);
+      return `
+        <div class="gauge">
+          <div class="gauge-label">${label}</div>
+          <div class="needle" style="transform:rotate(${angle}deg)"></div>
+          <div class="gauge-value">\( {value}<span style="font-size:13px"> \){unit}</span></div>
+        </div>`;
+    }
+
+    function renderGauges() {
+      document.getElementById('gauges').innerHTML = `
+        ${createGauge('TEMPERATURA', 21.4, 35, '°C')}
+        ${createGauge('pH', 3.8, 7, '')}
+        ${createGauge('GRAVITÀ', 1.012, 1.08, '')}
+        ${createGauge('ABV', 7.2, 12, '%')}
+        ${createGauge('CO₂', 2.8, 4, 'bar')}
+        ${createGauge('ZUCCHERI', 4.2, 30, 'g/L')}
+      `;
+    }
+
+    window.onload = renderGauges;
   </script>
 </body>
 </html>
