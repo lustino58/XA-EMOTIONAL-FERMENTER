@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>XA Vintage Fermentation - Passo 2</title>
+  <title>XA Vintage Fermentation - Passo 2 Corretto</title>
   <style>
     :root{
       --wood:#3c2f1e;
@@ -34,40 +34,38 @@
       margin-top:20px;padding:20px;
       background:rgba(42,31,20,.6);
       border:6px solid #d4af77;border-radius:18px;
-      min-height:60vh;
-      text-align:center;
     }
     .gauge-cluster{
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;
     }
     .gauge{
-      background:radial-gradient(circle,#3c2f1e,#2a1f14);
-      border:12px solid #d4af77;
+      background:radial-gradient(circle at 50% 50%,#3c2f1e,#1f170f);
+      border:14px solid #d4af77;
       border-radius:50%;
-      width:180px;height:180px;margin:0 auto;
+      width:210px;height:210px;margin:0 auto;
       position:relative;
-      box-shadow:0 0 30px rgba(212,175,119,.5),inset 0 0 40px #111;
+      box-shadow:0 0 40px rgba(212,175,119,.6),inset 0 0 50px #111;
     }
     .gauge-label{
-      position:absolute;top:18px;left:50%;transform:translateX(-50%);
-      font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#d4af77;font-weight:900;
+      position:absolute;top:22px;left:50%;transform:translateX(-50%);
+      font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#d4af77;font-weight:900;
     }
     .needle{
-      position:absolute;top:50%;left:50%;width:5px;height:78px;
-      background:linear-gradient(transparent 50%,var(--needle) 50%);
+      position:absolute;top:50%;left:50%;width:6px;height:88px;
+      background:linear-gradient(transparent 48%,var(--needle) 48%);
       transform-origin:50% 100%;
-      border-radius:4px 4px 0 0;
-      box-shadow:0 0 12px #ff3d3d;
-      transition:transform 1.2s cubic-bezier(0.68,-0.55,0.27,1.55);
+      border-radius:6px 6px 0 0;
+      box-shadow:0 0 14px #ff3d3d;
+      transition:transform 1.4s cubic-bezier(0.68,-0.55,0.27,1.55);
     }
     .needle::after{
-      content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);
-      width:16px;height:16px;background:#d4af77;border-radius:50%;box-shadow:0 0 10px #fff;
+      content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+      width:20px;height:20px;background:#d4af77;border-radius:50%;box-shadow:0 0 12px #fff;
     }
     .gauge-value{
-      position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
-      font-size:24px;font-weight:900;color:#f0e8d0;
-      text-shadow:0 0 12px #ffeb99;
+      position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+      font-size:26px;font-weight:900;color:#f0e8d0;
+      text-shadow:0 0 14px #ffeb99;
     }
     .tab-bar{
       position:fixed;bottom:0;left:0;right:0;
@@ -89,9 +87,9 @@
   </div>
 
   <div class="content">
-    <h2 style="color:#d4af77;margin-bottom:20px">Passo 2 – Cruscotto Analogico</h2>
+    <h2 style="color:#d4af77;margin-bottom:20px;text-align:center">Passo 2 – Cruscotto Analogico (corretto)</h2>
     <div class="gauge-cluster" id="gauges"></div>
-    <p style="margin-top:24px;color:#d4af77;font-size:15px">Aghi che si muovono in tempo reale.<br>Dimmi “Passo 3” quando vuoi il mixer compatto.</p>
+    <p style="margin-top:24px;color:#d4af77;font-size:15px;text-align:center">Aghi che si muovono in tempo reale.<br>Dimmi solo “Passo 3” quando sei pronto per il mixer.</p>
   </div>
 
   <div class="tab-bar">
@@ -108,7 +106,7 @@
         <div class="gauge">
           <div class="gauge-label">${label}</div>
           <div class="needle" style="transform:rotate(${angle}deg)"></div>
-          <div class="gauge-value">\( {value}<span style="font-size:13px"> \){unit}</span></div>
+          <div class="gauge-value">\( {value}<span style="font-size:14px"> \){unit}</span></div>
         </div>`;
     }
 
